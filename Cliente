@@ -36,7 +36,7 @@
 @    } 
 @    else
 @    {
-@        printf("CLIENT: Socket creado con exito..\n"); 
+@        printf("CLIENTE: Socket creado con exito...\n"); 
 @    }
     
     
