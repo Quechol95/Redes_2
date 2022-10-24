@@ -1,23 +1,23 @@
 @#include <unistd.h>  
 
-/* sockets */
+//**********************socket***********************************************
 @#include <netdb.h> 
 @#include <netinet/in.h> 
 @#include <sys/socket.h> 
 @#include <sys/types.h> 
 @#include <arpa/inet.h>
 
-/* strings / errors*/
+//*********************Cadenas y errores**************************************
 @#include <errno.h>
 @#include <stdio.h> 
 @#include <string.h> 
 
-/* SERVIDOR parameters */
-@#define SERV_PORT       8080              /* port */
-@#define BUF_SIZE        100               /* Buffer rx, tx max size  */
-@#define BACKLOG         5                 /* Max. client pending connections  */
+//*********************Parametros del servidor*********************************
+@#define SERV_PORT       8080              
+@#define BUF_SIZE        100              
+@#define BACKLOG         5                 
 
-@int main(int argc, char* argv[])          /* input arguments are not used */
+@int main(int argc, char* argv[])          
 @{ 
 @    int sockfd, connfd ;  /* listening socket and connection socket file descriptors */
 @    unsigned int len;     /* length of client address */
@@ -28,7 +28,7 @@
 @    char buff_rx[BUF_SIZE];   /* buffers for reception  */
     
      
-    /* socket creation */
+//**********************************Creacion del socket************************************
 @    sockfd = socket(AF_INET, SOCK_STREAM, 0); 
 @    if (sockfd == -1) 
 @    { 
@@ -40,16 +40,15 @@
 @        printf("[SERVIDOR]: Socket creado con exito..\n"); 
 @    }
     
-    /* clear structure */
+//*************************************Se limpia la estructura****************************************************
 @    memset(&servaddr, 0, sizeof(servaddr));
   
-    /* assign IP, SERV_PORT, IPV4 */
+//************************************Asignacion del puerto IP****************************************************
 @   servaddr.sin_family      = AF_INET; 
-@    servaddr.sin_addr.s_addr = INADDR_ANY; 
-@    servaddr.sin_port        = htons(SERV_PORT); 
+@   servaddr.sin_addr.s_addr = INADDR_ANY; 
+@   servaddr.sin_port        = htons(SERV_PORT); 
    
-    
-    /* Bind socket */
+//************************************ Parametros del socket ******************************************************
 @    if ((bind(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr))) != 0) 
 @    { 
 @        fprintf(stderr, "[SERVIDOR-error]: El enlace de socket fallido. %d: %s \n", errno, strerror( errno ));
@@ -60,7 +59,7 @@
 @        printf("[SERVIDOR]: Socket enlazado con exito \n");
 @    }
   
-    /* Listen */
+//**************************************Se pone a escuchar*****************************************************************
 @    if ((listen(sockfd, BACKLOG)) != 0) 
 @    { 
 @        fprintf(stderr, "[SERVIDOR-error]: Error de escucha del socket. %d: %s \n", errno, strerror( errno ));
@@ -73,22 +72,22 @@
 @    
 @    len = sizeof(client); 
   
-@      /* Accept the data from incoming sockets in a iterative way */
+//**************************************0Acepta los datos o interactua con ellos********************************************
 @      while(1)
 @      {
 @        connfd = accept(sockfd, (struct sockaddr *)&client, &len); 
 @        if (connfd < 0) 
 @        { 
-@@            fprintf(stderr, "[SERVIDOR-error]: Conexion no aceptada. %d: %s \n", errno, strerror( errno ));
-@@            return -1;
-@@       } 
+@            fprintf(stderr, "[SERVIDOR-error]: Conexion no aceptada. %d: %s \n", errno, strerror( errno ));
+@            return -1;
+@       } 
 @        else
 @        {              
 @@            while(1) /* read data from a client socket till it is closed */ 
 @@            {  
-@@                /* read client message, copy it into buffer */
-@@                len_rx = read(connfd, buff_rx, sizeof(buff_rx));  
-@@               
+
+//**************************************Lee el mensaje recivido**********************************************************
+@@                len_rx = read(connfd, buff_rx, sizeof(buff_rx));
 @@                if(len_rx == -1)
 @@                {
 @@                    fprintf(stderr, "[SERVIDOR-error]: connfd no se puede leer. %d: %s \n", errno, strerror( errno ));
